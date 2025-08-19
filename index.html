@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <title>Dynasty Trade Value Rechner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg: #0f1115;
+      --card: #151922;
+      --text: #e9eef6;
+      --muted: #a7b0c0;
+      --input: #1a2030;
+      --ring: #3a78ff;
+      --primary: #3a78ff;
+      --ok: #1e8e5a;
+      --bad: #d64545;
+      --ok-bg: #13251c;
+      --bad-bg: #2a1515;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    @media (prefers-color-scheme: light) {
+      :root{
+        --bg: #f6f8fb;
+        --card: #ffffff;
+        --text: #0f1320;
+        --muted: #5a667c;
+        --input: #f1f4fa;
+        --ring: #2b63e6;
+        --primary: #2b63e6;
+        --ok: #1b7f52;
+        --bad: #c53939;
+        --ok-bg: #e8f7ee;
+        --bad-bg: #fdecea;
+        --shadow: 0 10px 24px rgba(16,24,40,.08);
+      }
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; background: radial-gradient(1200px 600px at 15% -10%, rgba(58,120,255,.10), transparent),
+                 radial-gradient(900px 500px at 90% 10%, rgba(255,99,132,.08), transparent),
+                 var(--bg);
+      color:var(--text); font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      padding: 28px;
+    }
+    .wrap{max-width: 980px; margin: 0 auto;}
+    .hero{
+      padding: 18px 4px 22px;
+    }
+    .title{
+      font-size: clamp(24px, 3.5vw, 36px); font-weight: 800; letter-spacing: .2px; margin: 0 0 6px;
+    }
+    .sub{margin:0; color:var(--muted)}
+    .cards{display:grid; grid-template-columns: 1fr 1fr; gap:18px; margin-top:18px}
+    .card{
+      background: var(--card); border-radius: var(--radius); padding:18px; box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .card h3{margin:0 0 12px; font-size:18px}
+    .seg{
+      display:inline-flex; background:var(--input); border-radius: 12px; padding:4px; gap:4px;
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .seg button{
+      border:0; background:transparent; color:var(--muted); padding:9px 14px; border-radius: 8px; cursor:pointer;
+      font-weight:600;
+    }
+    .seg button.active{ background:#fff1; color:var(--text); outline:2px solid transparent }
+    .grid{
+      display:grid; grid-template-columns: 1fr 130px; gap:10px; align-items:center;
+    }
+    label{ color: var(--muted); font-size: 14px}
+    input[type="number"]{
+      width:100%; padding:12px 12px; border-radius: 12px; border:1px solid transparent; background:var(--input);
+      color:var(--text); outline:none; transition: box-shadow .15s, border-color .15s;
+    }
+    input[type="number"]:focus{
+      border-color: var(--ring); box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 20%, transparent);
+    }
+    .actions{display:flex; flex-wrap:wrap; gap:10px}
+    .btn{
+      border:1px solid color-mix(in oklab, var(--primary) 70%, #0000);
+      background: var(--primary); color:#fff; padding:11px 14px; border-radius: 12px; font-weight:700; cursor:pointer;
+      box-shadow: 0 8px 18px color-mix(in oklab, var(--primary) 25%, transparent);
+    }
+    .btn.secondary{
+      background: transparent; color: var(--text); border:1px solid rgba(255,255,255,.12)
+    }
+    .result{
+      margin-top:14px; border-radius: 14px; padding:14px; font-weight:700; display:flex; align-items:center; gap:10px;
+    }
+    .ok{ background: var(--ok-bg); color: var(--ok)}
+    .bad{ background: var(--bad-bg); color: var(--bad)}
+    .muted{ color: var(--muted)}
+    .calc{ margin-top:10px; padding:12px; border-radius:12px; background: color-mix(in oklab, var(--input) 85%, transparent);
+           font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space:pre-wrap; }
+    .barwrap{ margin-top:10px; background:var(--input); border-radius: 12px; padding:10px}
+    .bars{ display:grid; gap:8px }
+    .bar{ height:12px; background:#fff2; border-radius:999px; overflow:hidden}
+    .fill{ height:100%; background: linear-gradient(90deg, var(--primary), color-mix(in oklab, var(--primary) 60%, #0ff)); }
+    .barlabel{ display:flex; justify-content:space-between; font-size:13px; color:var(--muted)}
+    .footer{ color:var(--muted); font-size:12px; margin-top:10px}
+    @media (max-width: 840px){ .cards{ grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <h1 class="title">Dynasty Trade Value Rechner</h1>
+      <p class="sub">Regel: Bei <b>2:1</b> und <b>2:2</b> wird auf jeder Seite <b>der niedrigere</b> der zwei Spieler halbiert.
+        Der höhere Gesamtwert darf max. <b>10%</b> über dem niedrigeren liegen.</p>
+    </header>
+
+    <section class="card" aria-label="Trade-Modus">
+      <div class="seg" role="tablist" aria-label="Modus wählen">
+        <button class="segbtn active" data-mode="1-1" role="tab" aria-selected="true">1 : 1</button>
+        <button class="segbtn" data-mode="2-1" role="tab" aria-selected="false">2 : 1</button>
+        <button class="segbtn" data-mode="2-2" role="tab" aria-selected="false">2 : 2</button>
+      </div>
+    </section>
+
+    <section class="cards">
+      <div class="card">
+        <h3>Seite A</h3>
+        <div class="grid">
+          <label>Spieler A1</label>
+          <input id="a1" type="number" step="0.1" min="0" placeholder="z. B. 90">
+          <label class="row-a2">Spieler A2</label>
+          <input id="a2" class="row-a2" type="number" step="0.1" min="0" placeholder="z. B. 10">
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Seite B</h3>
+        <div class="grid">
+          <label>Spieler B1</label>
+          <input id="b1" type="number" step="0.1" min="0" placeholder="z. B. 77">
+          <label class="row-b2">Spieler B2</label>
+          <input id="b2" class="row-b2" type="number" step="0.1" min="0" placeholder="z. B. 47">
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="actions">
+        <button id="calc" class="btn">🔢 Berechnen</button>
+        <button id="clear" class="btn secondary">↺ Zurücksetzen</button>
+        <button id="ex1" class="btn secondary">Beispiel 1 (❌)</button>
+        <button id="ex2" class="btn secondary">Beispiel 2 (✅)</button>
+      </div>
+      <div id="out"></div>
+    </section>
+
+    <p class="footer">Hinweis: Dezimalwerte sind erlaubt (z. B. 23.5). Negative Werte sind nicht zulässig.</p>
+  </div>
+
+<script>
+(() => {
+  // Elements
+  const segBtns = Array.from(document.querySelectorAll('.segbtn'));
+  const a1 = document.getElementById('a1'), a2 = document.getElementById('a2');
+  const b1 = document.getElementById('b1'), b2 = document.getElementById('b2');
+  const out = document.getElementById('out');
+  const btnCalc = document.getElementById('calc');
+  const btnClear = document.getElementById('clear');
+  const btnEx1 = document.getElementById('ex1');
+  const btnEx2 = document.getElementById('ex2');
+
+  let mode = '1-1';
+
+  function setMode(m){
+    mode = m;
+    segBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === m));
+    // toggle second rows
+    document.querySelectorAll('.row-a2').forEach(el => el.style.display = (m === '1-1' ? 'none' : 'block'));
+    document.querySelectorAll('.row-b2').forEach(el => {
+      if (m === '1-1') el.style.display = 'none';
+      else if (m === '2-1') el.style.display = 'none';
+      else el.style.display = 'block';
+    });
+  }
+  segBtns.forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.mode)));
+  setMode('1-1');
+
+  function parseVal(inp){
+    if(!inp) return null;
+    const v = parseFloat(String(inp.value).replace(',', '.'));
+    if (Number.isNaN(v) || v < 0) return null;
+    return v;
+  }
+  const r1 = x => Math.round((x + Number.EPSILON) * 10) / 10;
+
+  function halfPair(v1, v2){
+    if (v2 == null) return {c1: v1 ?? 0, c2: null, halved: null};
+    if ((v1 ?? 0) <= (v2 ?? 0)) return {c1: (v1 ?? 0)/2, c2: (v2 ?? 0), halved: '1'};
+    return {c1: (v1 ?? 0), c2: (v2 ?? 0)/2, halved: '2'};
+    // „je Seite der niedrigere wird halbiert“
+  }
+
+  function renderBars(sumA, sumB){
+    const max = Math.max(sumA, sumB, 1);
+    const wA = Math.max(2, Math.min(100, (sumA / max) * 100));
+    const wB = Math.max(2, Math.min(100, (sumB / max) * 100));
+    return `
+      <div class="barwrap" aria-label="Summenvergleich">
+        <div class="bars">
+          <div class="barlabel"><span>A gesamt</span><span>${sumA}</span></div>
+          <div class="bar"><div class="fill" style="width:${wA}%"></div></div>
+          <div class="barlabel"><span>B gesamt</span><span>${sumB}</span></div>
+          <div class="bar"><div class="fill" style="width:${wB}%"></div></div>
+        </div>
+      </div>
+    `;
+  }
+
+  function calc(){
+    let va1 = parseVal(a1), va2 = parseVal(a2);
+    let vb1 = parseVal(b1), vb2 = parseVal(b2);
+
+    const errs = [];
+    if (mode === '1-1'){
+      if (va1 == null) errs.push('Seite A: Wert A1 fehlt oder ist ungültig.');
+      if (vb1 == null) errs.push('Seite B: Wert B1 fehlt oder ist ungültig.');
+      va2 = null; vb2 = null;
+    } else if (mode === '2-1'){
+      if (va1 == null || va2 == null) errs.push('Seite A: A1 & A2 benötigt.');
+      if (vb1 == null) errs.push('Seite B: B1 fehlt oder ist ungültig.');
+      vb2 = null;
+    } else if (mode === '2-2'){
+      if (va1 == null || va2 == null) errs.push('Seite A: A1 & A2 benötigt.');
+      if (vb1 == null || vb2 == null) errs.push('Seite B: B1 & B2 benötigt.');
+    }
+    if (errs.length){
+      out.innerHTML = `<div class="result bad">❌ ${errs.join(' ')}</div>`;
+      return;
+    }
+
+    // Halbierungsregel anwenden
+    let ca1 = va1, ca2 = va2, cb1 = vb1, cb2 = vb2;
+    let noteA = '', noteB = '';
+    if (mode === '2-1' || mode === '2-2'){
+      const A = halfPair(va1, va2); ca1 = A.c1; ca2 = A.c2;
+      if (A.halved) noteA = `(A${A.halved} halbiert)`;
+    }
+    if (mode === '2-2'){
+      const B = halfPair(vb1, vb2); cb1 = B.c1; cb2 = B.c2;
+      if (B.halved) noteB = `(B${B.halved} halbiert)`;
+    }
+
+    const sumA = r1((ca1 ?? 0) + (ca2 ?? 0));
+    const sumB = r1((cb1 ?? 0) + (cb2 ?? 0));
+
+    const low = Math.min(sumA, sumB);
+    const high = Math.max(sumA, sumB);
+
+    let diffPct = 0, decision = '', cls = 'ok';
+    if (low === 0 && high === 0){
+      diffPct = 0; decision = '✅ Freigabe: Beide Seiten sind 0.';
+      cls = 'ok';
+    } else if (low === 0){
+      diffPct = 100; decision = '❌ Abgelehnt: Eine Seite ist 0, die andere nicht.';
+      cls = 'bad';
+    } else {
+      diffPct = r1(((high - low) / low) * 100);
+      if (diffPct <= 10){ decision = '✅ Freigabe: Wertunterschied ≤ 10%.'; cls = 'ok'; }
+      else { decision = '❌ Abgelehnt: Wertunterschied > 10%.'; cls = 'bad'; }
+    }
+
+    const calcA = (mode === '1-1')
+      ? `A: ${va1}  → Summe A = ${sumA}`
+      : `A: ${va1} + ${va2}  → Korrektur: ${r1(ca1)} + ${r1(ca2 ?? 0)} ${noteA}  → Summe A = ${sumA}`;
+    const calcB = (mode === '1-1')
+      ? `B: ${vb1}  → Summe B = ${sumB}`
+      : (mode === '2-1')
+        ? `B: ${vb1}  → Summe B = ${sumB}`
+        : `B: ${vb1} + ${vb2}  → Korrektur: ${r1(cb1)} + ${r1(cb2 ?? 0)} ${noteB}  → Summe B = ${sumB}`;
+
+    const detail = `Summen: A = ${sumA} | B = ${sumB}
+Differenz: ${r1(high - low)}  →  ${diffPct}% (höher vs. niedriger)`;
+
+    out.innerHTML = `
+      <div class="result ${cls}">${decision}</div>
+      ${renderBars(sumA, sumB)}
+      <div class="calc">${calcA}\n${calcB}\n\n${detail}\n\nRegel-Check: Höherer Gesamtwert darf max. 10% über dem niedrigeren liegen.</div>
+    `;
+  }
+
+  // Buttons
+  btnCalc.addEventListener('click', calc);
+  btnClear.addEventListener('click', () => { a1.value=''; a2.value=''; b1.value=''; b2.value=''; out.innerHTML=''; });
+  btnEx1.addEventListener('click', () => { setMode('2-2'); a1.value=90; a2.value=10; b1.value=53; b2.value=47; });
+  btnEx2.addEventListener('click', () => { setMode('2-2'); a1.value=90; a2.value=10; b1.value=77; b2.value=47; });
+
+  // Enter startet Berechnung
+  [a1,a2,b1,b2].forEach(i => i.addEventListener('keydown', e => { if(e.key === 'Enter') calc(); }));
+})();
+</script>
+</body>
+</html>
