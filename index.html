@@ -19,105 +19,72 @@
 
   <style>
     :root{
-      --bg: #0f1115;
-      --card: #151922;
-      --text: #e9eef6;
-      --muted: #a7b0c0;
-      --input: #1a2030;
-      --ring: #3a78ff;
-      --primary: #3a78ff;
-      --ok: #1e8e5a;
-      --bad: #d64545;
-      --ok-bg: #13251c;
-      --bad-bg: #2a1515;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius: 16px;
+      --bg:#0f1115; --card:#151922; --text:#e9eef6; --muted:#a7b0c0; --input:#1a2030;
+      --ring:#3a78ff; --primary:#3a78ff; --ok:#1e8e5a; --bad:#d64545; --ok-bg:#13251c; --bad-bg:#2a1515;
+      --shadow:0 10px 30px rgba(0,0,0,.35); --radius:16px;
     }
-    @media (prefers-color-scheme: light) {
+    @media (prefers-color-scheme: light){
       :root{
-        --bg: #f6f8fb;
-        --card: #ffffff;
-        --text: #0f1320;
-        --muted: #5a667c;
-        --input: #f1f4fa;
-        --ring: #2b63e6;
-        --primary: #2b63e6;
-        --ok: #1b7f52;
-        --bad: #c53939;
-        --ok-bg: #e8f7ee;
-        --bad-bg: #fdecea;
-        --shadow: 0 10px 24px rgba(16,24,40,.08);
+        --bg:#f6f8fb; --card:#fff; --text:#0f1320; --muted:#5a667c; --input:#f1f4fa;
+        --ring:#2b63e6; --primary:#2b63e6; --ok:#1b7f52; --bad:#c53939; --ok-bg:#e8f7ee; --bad-bg:#fdecea;
+        --shadow:0 10px 24px rgba(16,24,40,.08);
       }
     }
     *{box-sizing:border-box}
     body{
-      margin:0; background: radial-gradient(1200px 600px at 15% -10%, rgba(58,120,255,.10), transparent),
-                 radial-gradient(900px 500px at 90% 10%, rgba(255,99,132,.08), transparent),
-                 var(--bg);
-      color:var(--text); font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      padding: 28px;
+      margin:0; background:
+        radial-gradient(1200px 600px at 15% -10%, rgba(58,120,255,.10), transparent),
+        radial-gradient(900px 500px at 90% 10%, rgba(255,99,132,.08), transparent),
+        var(--bg);
+      color:var(--text); font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; padding:28px;
     }
-    .wrap{max-width: 980px; margin: 0 auto;}
-    .hero{ padding: 18px 4px 22px; }
-    .title{ font-size: clamp(24px, 3.5vw, 36px); font-weight: 800; letter-spacing: .2px; margin: 0 0 6px; }
-    .sub{margin:0; color:var(--muted)}
-    .cards{display:grid; grid-template-columns: 1fr 1fr; gap:18px; margin-top:18px}
-    .card{
-      background: var(--card); border-radius: var(--radius); padding:18px; box-shadow: var(--shadow);
-      border: 1px solid rgba(255,255,255,.06);
+    .wrap{max-width:980px;margin:0 auto;}
+    .hero{padding:18px 4px 22px;}
+    .title{font-size:clamp(24px,3.5vw,36px);font-weight:800;margin:0 0 6px}
+    .sub{margin:0;color:var(--muted)}
+    .cards{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+    .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);border:1px solid #ffffff10}
+    .card h3{margin:0 0 12px;font-size:18px}
+    .seg{display:inline-flex;background:var(--input);border-radius:12px;padding:4px;gap:4px;border:1px solid #ffffff14}
+    .seg button{border:0;background:transparent;color:var(--muted);padding:9px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+    .seg button.active{background:#fff1;color:var(--text)}
+    /* Eingabe-Grid: Name links, Wert rechts */
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center}
+    label{color:var(--muted);font-size:14px}
+    input{
+      width:100%;padding:12px;border-radius:12px;border:1px solid transparent;background:var(--input);color:var(--text);outline:none;
+      transition:box-shadow .15s,border-color .15s;
     }
-    .card h3{margin:0 0 12px; font-size:18px}
-    .seg{
-      display:inline-flex; background:var(--input); border-radius: 12px; padding:4px; gap:4px;
-      border:1px solid rgba(255,255,255,.08);
-    }
-    .seg button{
-      border:0; background:transparent; color:var(--muted); padding:9px 14px; border-radius: 8px; cursor:pointer;
-      font-weight:600;
-    }
-    .seg button.active{ background:#fff1; color:var(--text); outline:2px solid transparent }
-    .grid{
-      display:grid; grid-template-columns: 1fr 130px; gap:10px; align-items:center;
-    }
-    label{ color: var(--muted); font-size: 14px}
-    input[type="number"]{
-      width:100%; padding:12px 12px; border-radius: 12px; border:1px solid transparent; background:var(--input);
-      color:var(--text); outline:none; transition: box-shadow .15s, border-color .15s;
-    }
-    input[type="number"]:focus{
-      border-color: var(--ring); box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 20%, transparent);
-    }
-    .actions{display:flex; flex-wrap:wrap; gap:10px}
+    input:focus{border-color:var(--ring);box-shadow:0 0 0 4px color-mix(in oklab,var(--ring) 20%, transparent)}
+    input[type="number"]{text-align:right}
+    .namehint{font-size:12px;color:var(--muted)}
+    .row-a2,.row-b2{display:contents}
+    .actions{display:flex;flex-wrap:wrap;gap:10px}
     .btn{
-      border:1px solid color-mix(in oklab, var(--primary) 70%, #0000);
-      background: var(--primary); color:#fff; padding:11px 14px; border-radius: 12px; font-weight:700; cursor:pointer;
-      box-shadow: 0 8px 18px color-mix(in oklab, var(--primary) 25%, transparent);
+      border:1px solid color-mix(in oklab,var(--primary) 70%, #0000);
+      background:var(--primary);color:#fff;padding:11px 14px;border-radius:12px;font-weight:700;cursor:pointer;
+      box-shadow:0 8px 18px color-mix(in oklab,var(--primary) 25%, transparent);
     }
-    .btn.secondary{
-      background: transparent; color: var(--text); border:1px solid rgba(255,255,255,.12)
-    }
-    .result{
-      margin-top:14px; border-radius: 14px; padding:14px; font-weight:700; display:flex; align-items:center; gap:10px;
-    }
-    .ok{ background: var(--ok-bg); color: var(--ok)}
-    .bad{ background: var(--bad-bg); color: var(--bad)}
-    .muted{ color: var(--muted)}
-    .calc{ margin-top:10px; padding:12px; border-radius:12px; background: color-mix(in oklab, var(--input) 85%, transparent);
-           font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space:pre-wrap; }
-    .barwrap{ margin-top:10px; background:var(--input); border-radius: 12px; padding:10px}
-    .bars{ display:grid; gap:8px }
-    .bar{ height:12px; background:#fff2; border-radius:999px; overflow:hidden}
-    .fill{ height:100%; background: linear-gradient(90deg, var(--primary), color-mix(in oklab, var(--primary) 60%, #0ff)); }
-    .barlabel{ display:flex; justify-content:space-between; font-size:13px; color:var(--muted)}
-    .footer{ color: var(--muted); font-size:12px; margin-top:10px}
-    @media (max-width: 840px){ .cards{ grid-template-columns: 1fr; } }
+    .btn.secondary{background:transparent;color:var(--text);border:1px solid #ffffff22}
+    .result{margin-top:14px;border-radius:14px;padding:14px;font-weight:700;display:flex;gap:10px}
+    .ok{background:var(--ok-bg);color:var(--ok)} .bad{background:var(--bad-bg);color:var(--bad)}
+    .muted{color:var(--muted)}
+    .calc{margin-top:10px;padding:12px;border-radius:12px;background:color-mix(in oklab,var(--input) 85%, transparent);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap}
+    .barwrap{margin-top:10px;background:var(--input);border-radius:12px;padding:10px}
+    .bars{display:grid;gap:8px}
+    .bar{height:12px;background:#fff2;border-radius:999px;overflow:hidden}
+    .fill{height:100%;background:linear-gradient(90deg,var(--primary),color-mix(in oklab,var(--primary) 60%, #0ff))}
+    .barlabel{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+    .footer{color:var(--muted);font-size:12px;margin-top:10px}
+    @media (max-width:840px){.cards{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header class="hero">
       <h1 class="title">Dynasty Trade Value Rechner</h1>
-      <p class="sub">Regel: Bei <b>2:1</b> und <b>2:2</b> wird auf jeder Seite <b>der niedrigere</b> der zwei Spieler halbiert.
+      <p class="sub">Regel: Bei <b>2:1</b> und <b>2:2</b> wird je Seite der <b>niedrigere</b> der zwei Spieler halbiert.
         Der höhere Gesamtwert darf max. <b>10%</b> über dem niedrigeren liegen.</p>
     </header>
 
@@ -134,20 +101,32 @@
     <section class="cards">
       <div class="card">
         <h3>Seite A</h3>
+        <p class="namehint">Namen sind optional (nur Anzeige), die Berechnung nutzt die Werte.</p>
         <div class="grid">
-          <label>Spieler A1</label>
+          <label for="a1n">Name A1</label>
+          <input id="a1n" type="text" placeholder="z. B. Amon-Ra St. Brown">
+          <label for="a1">Wert A1</label>
           <input id="a1" type="number" step="0.1" min="0" placeholder="z. B. 90">
-          <label class="row-a2">Spieler A2</label>
+
+          <label for="a2n" class="row-a2">Name A2</label>
+          <input id="a2n" class="row-a2" type="text" placeholder="optional">
+          <label for="a2" class="row-a2">Wert A2</label>
           <input id="a2" class="row-a2" type="number" step="0.1" min="0" placeholder="z. B. 10">
         </div>
       </div>
 
       <div class="card">
         <h3>Seite B</h3>
+        <p class="namehint">Namen sind optional (nur Anzeige), die Berechnung nutzt die Werte.</p>
         <div class="grid">
-          <label>Spieler B1</label>
+          <label for="b1n">Name B1</label>
+          <input id="b1n" type="text" placeholder="z. B. Nico Collins">
+          <label for="b1">Wert B1</label>
           <input id="b1" type="number" step="0.1" min="0" placeholder="z. B. 77">
-          <label class="row-b2">Spieler B2</label>
+
+          <label for="b2n" class="row-b2">Name B2</label>
+          <input id="b2n" class="row-b2" type="text" placeholder="optional">
+          <label for="b2" class="row-b2">Wert B2</label>
           <input id="b2" class="row-b2" type="number" step="0.1" min="0" placeholder="z. B. 47">
         </div>
       </div>
@@ -169,10 +148,12 @@
 
 <script>
 (() => {
-  // Elements
+  // Elemente
   const segBtns = Array.from(document.querySelectorAll('.segbtn'));
-  const a1 = document.getElementById('a1'), a2 = document.getElementById('a2');
-  const b1 = document.getElementById('b1'), b2 = document.getElementById('b2');
+  const a1n = document.getElementById('a1n'), a1 = document.getElementById('a1');
+  const a2n = document.getElementById('a2n'), a2 = document.getElementById('a2');
+  const b1n = document.getElementById('b1n'), b1 = document.getElementById('b1');
+  const b2n = document.getElementById('b2n'), b2 = document.getElementById('b2');
   const out = document.getElementById('out');
   const btnCalc = document.getElementById('calc');
   const btnClear = document.getElementById('clear');
@@ -184,7 +165,7 @@
   function setMode(m){
     mode = m;
     segBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === m));
-    // toggle second rows
+    // zweite Zeile je nach Modus ein-/ausblenden
     document.querySelectorAll('.row-a2').forEach(el => el.style.display = (m === '1-1' ? 'none' : 'block'));
     document.querySelectorAll('.row-b2').forEach(el => {
       if (m === '1-1') el.style.display = 'none';
@@ -207,7 +188,6 @@
     if (v2 == null) return {c1: v1 ?? 0, c2: null, halved: null};
     if ((v1 ?? 0) <= (v2 ?? 0)) return {c1: (v1 ?? 0)/2, c2: (v2 ?? 0), halved: '1'};
     return {c1: (v1 ?? 0), c2: (v2 ?? 0)/2, halved: '2'};
-    // „je Seite der niedrigere wird halbiert“
   }
 
   function renderBars(sumA, sumB){
@@ -224,6 +204,11 @@
         </div>
       </div>
     `;
+  }
+
+  function labelOr(fallback, inp){
+    const t = (inp?.value || '').trim();
+    return t ? t : fallback;
   }
 
   function calc(){
@@ -248,16 +233,20 @@
       return;
     }
 
-    // Halbierungsregel anwenden
+    // Namen für Anzeige
+    const A1N = labelOr('A1', a1n), A2N = labelOr('A2', a2n);
+    const B1N = labelOr('B1', b1n), B2N = labelOr('B2', b2n);
+
+    // Halbierungsregel
     let ca1 = va1, ca2 = va2, cb1 = vb1, cb2 = vb2;
     let noteA = '', noteB = '';
     if (mode === '2-1' || mode === '2-2'){
       const A = halfPair(va1, va2); ca1 = A.c1; ca2 = A.c2;
-      if (A.halved) noteA = `(A${A.halved} halbiert)`;
+      if (A.halved) noteA = `( ${A.halved === '1' ? A1N : A2N} halbiert )`;
     }
     if (mode === '2-2'){
       const B = halfPair(vb1, vb2); cb1 = B.c1; cb2 = B.c2;
-      if (B.halved) noteB = `(B${B.halved} halbiert)`;
+      if (B.halved) noteB = `( ${B.halved === '1' ? B1N : B2N} halbiert )`;
     }
 
     const sumA = r1((ca1 ?? 0) + (ca2 ?? 0));
@@ -268,11 +257,9 @@
 
     let diffPct = 0, decision = '', cls = 'ok';
     if (low === 0 && high === 0){
-      diffPct = 0; decision = '✅ Freigabe: Beide Seiten sind 0.';
-      cls = 'ok';
+      diffPct = 0; decision = '✅ Freigabe: Beide Seiten sind 0.'; cls = 'ok';
     } else if (low === 0){
-      diffPct = 100; decision = '❌ Abgelehnt: Eine Seite ist 0, die andere nicht.';
-      cls = 'bad';
+      diffPct = 100; decision = '❌ Abgelehnt: Eine Seite ist 0, die andere nicht.'; cls = 'bad';
     } else {
       diffPct = r1(((high - low) / low) * 100);
       if (diffPct <= 10){ decision = '✅ Freigabe: Wertunterschied ≤ 10%.'; cls = 'ok'; }
@@ -280,13 +267,18 @@
     }
 
     const calcA = (mode === '1-1')
-      ? `A: ${va1}  → Summe A = ${sumA}`
-      : `A: ${va1} + ${va2}  → Korrektur: ${r1(ca1)} + ${r1(ca2 ?? 0)} ${noteA}  → Summe A = ${sumA}`;
+      ? `${A1N}: ${va1}  → Summe A = ${sumA}`
+      : `${A1N}: ${va1}  +  ${A2N}: ${va2}
+         → Korrektur: ${A1N} ${r1(ca1)}  +  ${A2N} ${r1(ca2 ?? 0)}  ${noteA}
+         → Summe A = ${sumA}`.replace(/\n\s+/g,'\n');
+
     const calcB = (mode === '1-1')
-      ? `B: ${vb1}  → Summe B = ${sumB}`
+      ? `${B1N}: ${vb1}  → Summe B = ${sumB}`
       : (mode === '2-1')
-        ? `B: ${vb1}  → Summe B = ${sumB}`
-        : `B: ${vb1} + ${vb2}  → Korrektur: ${r1(cb1)} + ${r1(cb2 ?? 0)} ${noteB}  → Summe B = ${sumB}`;
+        ? `${B1N}: ${vb1}  → Summe B = ${sumB}`
+        : `${B1N}: ${vb1}  +  ${B2N}: ${vb2}
+           → Korrektur: ${B1N} ${r1(cb1)}  +  ${B2N} ${r1(cb2 ?? 0)}  ${noteB}
+           → Summe B = ${sumB}`.replace(/\n\s+/g,'\n');
 
     const detail = `Summen: A = ${sumA} | B = ${sumB}
 Differenz: ${r1(high - low)}  →  ${diffPct}% (höher vs. niedriger)`;
@@ -300,12 +292,26 @@ Differenz: ${r1(high - low)}  →  ${diffPct}% (höher vs. niedriger)`;
 
   // Buttons
   btnCalc.addEventListener('click', calc);
-  btnClear.addEventListener('click', () => { a1.value=''; a2.value=''; b1.value=''; b2.value=''; out.innerHTML=''; });
-  btnEx1.addEventListener('click', () => { setMode('2-2'); a1.value=90; a2.value=10; b1.value=53; b2.value=47; });
-  btnEx2.addEventListener('click', () => { setMode('2-2'); a1.value=90; a2.value=10; b1.value=77; b2.value=47; });
+  btnClear.addEventListener('click', () => {
+    [a1n,a2n,b1n,b2n,a1,a2,b1,b2].forEach(i => i.value=''); out.innerHTML='';
+  });
+  btnEx1.addEventListener('click', () => {
+    setMode('2-2');
+    a1n.value="Ja'Marr Chase"; a1.value=90;
+    a2n.value="Darnell Mooney"; a2.value=10;
+    b1n.value="DJ Moore"; b1.value=53;
+    b2n.value="Nico Collins"; b2.value=47;
+  });
+  btnEx2.addEventListener('click', () => {
+    setMode('2-2');
+    a1n.value="Ja'Marr Chase"; a1.value=90;
+    a2n.value="Darnell Mooney"; a2.value=10;
+    b1n.value="Amon-Ra St. Brown"; b1.value=77;
+    b2n.value="Nico Collins"; b2.value=47;
+  });
 
   // Enter startet Berechnung
-  [a1,a2,b1,b2].forEach(i => i.addEventListener('keydown', e => { if(e.key === 'Enter') calc(); }));
+  [a1n,a2n,b1n,b2n,a1,a2,b1,b2].forEach(i => i.addEventListener('keydown', e => { if(e.key === 'Enter') calc(); }));
 })();
 </script>
 </body>
